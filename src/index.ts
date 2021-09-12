@@ -1,83 +1,16 @@
-import { ApolloServer, gql } from "apollo-server";
+import "reflect-metadata";
+import { ApolloServer } from "apollo-server";
+import { buildSchema } from "type-graphql";
 
-const typeDefs = gql`
-  type Wilder {
-    name: String
-    city: String
-    skills: [Skill]
-  }
+import { WilderResolver } from "./resolvers/wilder.resolver";
 
-  type Skill {
-    name: String
-    votes: Int
-  }
+(async () => {
+  const schema = await buildSchema({
+    resolvers: [WilderResolver],
+  });
+  const server = new ApolloServer({ schema });
 
-  type Query {
-    wilders: [Wilder]
-  }
-`;
-
-const wilders = [
-  {
-    name: "Alain",
-    city: "Paris",
-    skills: [
-      {
-        name: "NodeJS",
-        votes: 3,
-      },
-    ],
-  },
-  {
-    name: "Bernadette",
-    city: "Paris",
-    skills: [
-      {
-        name: "NodeJS",
-        votes: 0,
-      },
-    ],
-  },
-  {
-    name: "Charles",
-    city: "Paris",
-    skills: [
-      {
-        name: "React",
-        votes: 2,
-      },
-    ],
-  },
-  {
-    name: "Delphine",
-    city: "Paris",
-    skills: [
-      {
-        name: "React",
-        votes: 3,
-      },
-    ],
-  },
-  {
-    name: "Edouard",
-    city: "Bordeaux",
-    skills: [
-      {
-        name: "VueJS",
-        votes: 0,
-      },
-    ],
-  },
-];
-
-const resolvers = {
-  Query: {
-    wilders: () => wilders,
-  },
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
-
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+  server.listen().then(({ url }) => {
+    console.log(`🚀  Server ready at ${url}`);
+  });
+})();
