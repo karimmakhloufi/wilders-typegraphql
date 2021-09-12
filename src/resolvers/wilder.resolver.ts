@@ -1,5 +1,6 @@
-import { Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Wilder } from "../entities/wilder.entity";
+import { WilderInput } from "./inputTypes/wilders.input";
 
 const wilders = [
   {
@@ -59,5 +60,21 @@ export class WilderResolver {
   @Query(() => [Wilder])
   wilders() {
     return wilders;
+  }
+
+  @Mutation(() => Wilder)
+  addWilder(@Arg("wilder") { name, city }: WilderInput) {
+    console.log("name", name);
+    console.log("city", city);
+    return {
+      name: "Edouard",
+      city: "Bordeaux",
+      skills: [
+        {
+          name: "VueJS",
+          votes: 0,
+        },
+      ],
+    };
   }
 }
